@@ -1,21 +1,40 @@
 import multer from "multer";
 
-// Storage Config
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
+const storage =
+  multer.diskStorage({
 
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      Date.now() + "-" + file.originalname
-    );
-  },
-});
+    destination:
+      function (
+        req,
+        file,
+        cb
+      ) {
 
-const upload = multer({
-  storage,
-});
+        cb(
+          null,
+          "uploads/"
+        );
+      },
+
+    filename:
+      function (
+        req,
+        file,
+        cb
+      ) {
+
+        cb(
+          null,
+          Date.now() +
+          "-" +
+          file.originalname
+        );
+      },
+  });
+
+const upload =
+  multer({
+    storage,
+  });
 
 export default upload;

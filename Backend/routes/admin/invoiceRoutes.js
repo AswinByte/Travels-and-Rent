@@ -1,9 +1,11 @@
 import express from "express";
 
 import {
-  generateInvoice,
+ generateInvoice,
   getInvoices,
-  downloadInvoice
+  getInvoiceById,
+  deleteInvoice,
+  downloadInvoice,
 } from "../../controllers/admin/invoiceController.js";
 
 import { protect }
@@ -33,5 +35,19 @@ router.get(
   protect,
   admin,
   downloadInvoice
+);
+
+router.get(
+  "/:id",
+  protect,
+  admin,
+  getInvoiceById
+);
+
+router.delete(
+  "/:id",
+  protect,
+  admin,
+  deleteInvoice
 );
 export default router;

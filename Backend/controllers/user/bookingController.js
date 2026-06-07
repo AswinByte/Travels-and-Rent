@@ -48,30 +48,47 @@ export const uploadPaymentScreenshot = async (
   res
 ) => {
   try {
-    const booking = await Booking.findById(
-      req.params.id
-    );
+
+    const booking =
+      await Booking.findById(
+        req.params.id
+      );
 
     if (!booking) {
       return res.status(404).json({
-        message: "Booking not found",
+        message:
+          "Booking not found",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        message:
+          "Screenshot required",
       });
     }
 
     booking.paymentScreenshot =
       req.file.path;
 
+    booking.paymentStatus =
+      "pending";
+
     await booking.save();
 
     res.status(200).json({
-      message: "Screenshot uploaded",
+      message:
+        "Screenshot uploaded successfully",
       booking,
     });
 
   } catch (error) {
+
     res.status(500).json({
-      message: error.message,
+      message:
+        error.message,
     });
+
   }
 };
 

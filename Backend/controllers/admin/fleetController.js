@@ -5,6 +5,10 @@ export const addFuelLog = async (
   req,
   res
 ) => {
+  console.log(
+    "BODY:",
+    req.body
+  );
   try {
 
     const fuelLog =
@@ -38,5 +42,108 @@ export const getFuelLogs = async (
     res.status(500).json({
       message: error.message,
     });
+  }
+};
+
+export const getFuelLogById = async (
+  req,
+  res
+) => {
+  try {
+
+    const fuelLog =
+      await FuelLog.findById(
+        req.params.id
+      ).populate(
+        "vehicle",
+        "vehicleName vehicleNumber"
+      );
+
+    if (!fuelLog) {
+      return res.status(404).json({
+        message:
+          "Fuel Log not found",
+      });
+    }
+
+    res.status(200).json(
+      fuelLog
+    );
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message,
+    });
+
+  }
+};
+
+export const updateFuelLog = async (
+  req,
+  res
+) => {
+  try {
+
+    const fuelLog =
+      await FuelLog.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        }
+      );
+
+    if (!fuelLog) {
+      return res.status(404).json({
+        message:
+          "Fuel Log not found",
+      });
+    }
+
+    res.status(200).json(
+      fuelLog
+    );
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message,
+    });
+
+  }
+};
+
+export const deleteFuelLog = async (
+  req,
+  res
+) => {
+  try {
+
+    const fuelLog =
+      await FuelLog.findById(
+        req.params.id
+      );
+
+    if (!fuelLog) {
+      return res.status(404).json({
+        message:
+          "Fuel Log not found",
+      });
+    }
+
+    await fuelLog.deleteOne();
+
+    res.status(200).json({
+      message:
+        "Fuel Log deleted successfully",
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message,
+    });
+
   }
 };

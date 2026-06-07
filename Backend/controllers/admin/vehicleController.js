@@ -3,6 +3,9 @@ import Vehicle from "../../models/Vehicle.js";
 // Add Vehicle
 export const addVehicle = async (req, res) => {
   try {
+    if (req.file) {
+      req.body.image = req.file.path;
+    }
     const vehicle = await Vehicle.create(req.body);
 
     res.status(201).json(vehicle);
@@ -125,32 +128,49 @@ export const deleteVehicle = async (req, res) => {
   }
 };
 
-export const updateVehicle = async (
-  req,
-  res
-) => {
-  try {
+export const updateVehicle =
+  async (req, res) => {
 
-    const vehicle =
-      await Vehicle.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
+    try {
+
+      const vehicle =
+        await Vehicle.findById(
+          req.params.id
+        );
+
+      if (!vehicle) {
+
+        return res.status(404)
+          .json({
+            message:
+              "Vehicle not found",
+          });
+      }
+
+      if (req.file) {
+
+        req.body.image =
+          req.file.path;
+      }
+
+      Object.assign(
+        vehicle,
+        req.body
       );
 
-    if (!vehicle) {
-      return res.status(404).json({
-        message: "Vehicle not found",
+      await vehicle.save();
+
+      res.status(200).json(
+        vehicle
+      );
+
+    } catch (error) {
+console.log(error);
+      res.status(500).json({
+        message:
+          error.message,
       });
     }
-
-    res.status(200).json(vehicle);
-
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
 };
 
 //markMaintenance
@@ -256,4 +276,38 @@ async (req, res) => {
 
   }
 
+};
+export const getVehicleById =
+  async (req, res) => {
+
+    try {
+
+      const vehicle =
+        await Vehicle.findById(
+          req.params.id
+        );
+
+      if (!vehicle) {
+
+        return res.status(404)
+          .json({
+            success: false,
+            message:
+              "Vehicle not found",
+          });
+      }
+
+      res.status(200).json({
+        success: true,
+        vehicle,
+      });
+
+    } catch (error) {
+
+      res.status(500).json({
+        success: false,
+        message:
+          error.message,
+      });
+    }
 };

@@ -8,6 +8,17 @@ const fuelLogSchema = mongoose.Schema(
       required: true,
     },
 
+    fuelType: {
+      type: String,
+      enum: [
+        "Petrol",
+        "Diesel",
+        "CNG",
+        "Electric",
+      ],
+      required: true,
+    },
+
     liters: {
       type: Number,
       required: true,

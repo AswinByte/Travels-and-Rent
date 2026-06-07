@@ -11,7 +11,22 @@ const bookingSchema = mongoose.Schema(
     vehicle: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vehicle",
-      required: true,
+    },
+
+    package: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Package",
+    },
+
+    driver: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Driver",
+    },
+ 
+    bookingType: {
+      type: String,
+      enum: ["travel", "rental", "package"],
+      default: "travel",
     },
 
     pickupDate: {
@@ -24,6 +39,11 @@ const bookingSchema = mongoose.Schema(
       required: true,
     },
 
+    totalDays: {
+      type: Number,
+      default: 1,
+    },
+
     totalAmount: {
       type: Number,
       required: true,
@@ -31,46 +51,25 @@ const bookingSchema = mongoose.Schema(
 
     bookingStatus: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled", "completed"],
+      enum: [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled",
+      ],
       default: "pending",
     },
 
-    paymentStatus: {
-      type: String,
-      enum: ["pending", "paid"],
-      default: "pending",
-    },
-
-    driver: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Driver",
-    },
-    bookingType: {
+   paymentScreenshot: {
   type: String,
-  enum: ["travel", "rental"],
-  default: "travel",
-},
-
-totalDays: {
-  type: Number,
-},
-
-bookingStatus: {
-  type: String,
-  enum: [
-    "pending",
-    "confirmed",
-    "completed",
-    "cancelled",
-  ],
-  default: "pending",
 },
 
 paymentStatus: {
   type: String,
   enum: [
     "pending",
-    "paid",
+    "verified",
+    "rejected"
   ],
   default: "pending",
 },
@@ -79,11 +78,10 @@ paymentStatus: {
     timestamps: true,
   }
 );
-paymentScreenshot: {
-   type: String
-}
 
+const Booking = mongoose.model(
+  "Booking",
+  bookingSchema
+);
 
-const Booking = mongoose.model("Booking", bookingSchema);
-
-export default Booking; 
+export default Booking;

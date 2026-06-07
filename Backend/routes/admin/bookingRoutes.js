@@ -2,14 +2,17 @@ import express from "express";
 
 import {
   getAllBookings,
+  getBookingById,
   confirmBooking,
   cancelBooking,
   completeBooking,
   verifyPayment,
-  filterBookings
+  rejectPayment,
+  filterBookings,
+  deleteBooking,
+  assignDriver,
+  updateBooking,
 } from "../../controllers/admin/bookingController.js";
-
-import { assignDriver } from "../../controllers/admin/bookingController.js";
 
 import { protect } from "../../middleware/authMiddleware.js";
 import { admin } from "../../middleware/adminMiddleware.js";
@@ -30,7 +33,7 @@ router.put("/:id/cancel", protect, admin, cancelBooking);
 
 router.put("/:id/complete", protect, admin, completeBooking);
 
-router.put(
+router.put( 
   "/:id/assign-driver",
   protect,
   admin,
@@ -42,6 +45,30 @@ router.put(
   protect,
   admin,
   verifyPayment
+);
+router.put(
+  "/:id/reject-payment",
+  protect,
+  admin,
+  rejectPayment
+);
+router.get(
+  "/:id",
+  protect,
+  admin,
+  getBookingById
+);
+router.put(
+  "/:id",
+  protect,
+  admin,
+  updateBooking
+);
+router.delete(
+  "/:id",
+  protect,
+  admin,
+  deleteBooking
 );
 
 export default router;

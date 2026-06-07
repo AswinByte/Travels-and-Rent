@@ -16,6 +16,35 @@ export const addPackage = async (req, res) => {
     });
   }
 };
+export const getPackageById = async (
+  req,
+  res
+) => {
+  try {
+
+    const packageData =
+      await Package.findById(
+        req.params.id
+      );
+
+    if (!packageData) {
+      return res.status(404).json({
+        message: "Package not found",
+      });
+    }
+
+    res.status(200).json(
+      packageData
+    );
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message,
+    });
+
+  }
+};
 
 // Get All Packages
 export const getPackages = async (req, res) => {
@@ -33,40 +62,69 @@ export const getPackages = async (req, res) => {
 };
 
 // Update Package
-export const updatePackage = async (req, res) => {
+export const updatePackage = async (
+  req,
+  res
+) => {
   try {
 
     const updatedPackage =
       await Package.findByIdAndUpdate(
         req.params.id,
         req.body,
-        { new: true }
+        {
+          new: true,
+          runValidators: true,
+        }
       );
 
-    res.status(200).json(updatedPackage);
+    if (!updatedPackage) {
+      return res.status(404).json({
+        message: "Package not found",
+      });
+    }
+
+    res.status(200).json(
+      updatedPackage
+    );
 
   } catch (error) {
+
     res.status(500).json({
       message: error.message,
     });
+
   }
 };
 
 // Delete Package
-export const deletePackage = async (req, res) => {
+export const deletePackage = async (
+  req,
+  res
+) => {
   try {
 
-    await Package.findByIdAndDelete(
-      req.params.id
-    );
+    const packageData =
+      await Package.findByIdAndDelete(
+        req.params.id
+      );
+
+    if (!packageData) {
+      return res.status(404).json({
+        message: "Package not found",
+      });
+    }
 
     res.status(200).json({
-      message: "Package deleted",
+      message:
+        "Package deleted successfully",
     });
 
   } catch (error) {
+
     res.status(500).json({
       message: error.message,
     });
+
   }
 };

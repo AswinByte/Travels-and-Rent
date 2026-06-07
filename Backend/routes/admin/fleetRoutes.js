@@ -3,8 +3,10 @@ import express from "express";
 import {
   addFuelLog,
   getFuelLogs,
+  getFuelLogById,
+  updateFuelLog,
+  deleteFuelLog,
 } from "../../controllers/admin/fleetController.js";
-
 import { protect }
 from "../../middleware/authMiddleware.js";
 
@@ -26,6 +28,27 @@ router.get(
   protect,
   admin,
   getFuelLogs
+);
+
+router.get(
+  "/fuel/:id",
+  protect,
+  admin,
+  getFuelLogById
+);
+
+router.put(
+  "/fuel/:id",
+  protect,
+  admin,
+  updateFuelLog
+);
+
+router.delete(
+  "/fuel/:id",
+  protect,
+  admin,
+  deleteFuelLog
 );
 
 export default router;

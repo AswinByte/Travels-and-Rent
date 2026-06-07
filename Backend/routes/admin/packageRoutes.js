@@ -3,6 +3,7 @@ import express from "express";
 import {
   addPackage,
   getPackages,
+  getPackageById,
   updatePackage,
   deletePackage,
 } from "../../controllers/admin/packageController.js";
@@ -39,5 +40,9 @@ router.delete(
 
 // Public
 router.get("/", getPackages);
+router.get(
+  "/:id",
+  getPackageById
+);
 
 export default router;

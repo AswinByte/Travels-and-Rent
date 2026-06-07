@@ -1,13 +1,16 @@
 import Booking from "../../models/Booking.js";
 import Driver from "../../models/Driver.js";
+import User from "../../models/User.js";
+import transporter from "../../config/nodemailer.js";
 
 // Get All Bookings
 export const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
-      .populate("user", "name email")
-      .populate("vehicle", "vehicleName");
-
+  .populate("user", "name email phone")
+  .populate("vehicle", "vehicleName vehicleNumber")
+  .populate("driver", "name phone")
+  .populate("package", "title destination");
     res.status(200).json(bookings);
 
   } catch (error) {
@@ -59,6 +62,16 @@ export const cancelBooking = async (req, res) => {
 
     await booking.save();
 
+    // Make driver available again
+    if (booking.driver) {
+      await Driver.findByIdAndUpdate(
+        booking.driver,
+        {
+          status: "available",
+        }
+      );
+    }
+
     res.status(200).json({
       message: "Booking cancelled",
       booking,
@@ -74,73 +87,6 @@ export const cancelBooking = async (req, res) => {
 // Complete Booking
 export const completeBooking = async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id);
-
-    if (!booking) {
-      return res.status(404).json({
-        message: "Booking not found",
-      });
-    }
-
-    booking.bookingStatus = "completed";
-
-    await booking.save();
-
-    res.status(200).json({
-      message: "Booking completed",
-      booking,
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-};
-
-//assignDriver
-export const assignDriver = async (req, res) => {
-  try {
-    const booking = await Booking.findById(req.params.id);
-
-    if (!booking) {
-      return res.status(404).json({
-        message: "Booking not found",
-      });
-    }
-
-    const driver = await Driver.findById(req.body.driverId);
-
-    if (!driver) {
-      return res.status(404).json({
-        message: "Driver not found",
-      });
-    }
-
-    booking.driver = driver._id;
-
-    booking.bookingStatus = "confirmed";
-
-    driver.status = "assigned";
-
-    await booking.save();
-
-    await driver.save();
-
-    res.status(200).json({
-      message: "Driver assigned successfully",
-      booking,
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
-  }
-};
-
-export const verifyPayment = async (req, res) => {
-  try {
 
     const booking = await Booking.findById(
       req.params.id
@@ -152,19 +98,232 @@ export const verifyPayment = async (req, res) => {
       });
     }
 
-    booking.paymentStatus = "paid";
+    booking.bookingStatus = "completed";
 
     await booking.save();
 
+    // Make driver available again
+    if (booking.driver) {
+      await Driver.findByIdAndUpdate(
+        booking.driver,
+        {
+          status: "available",
+        }
+      );
+    }
+
     res.status(200).json({
-      message: "Payment verified successfully",
+      message: "Booking completed",
       booking,
     });
 
   } catch (error) {
+
     res.status(500).json({
       message: error.message,
     });
+
+  }
+};
+//assignDriver
+export const assignDriver = async (
+  req,
+  res
+) => {
+  try {
+
+    const booking =
+      await Booking.findById(
+        req.params.id
+      );
+
+    if (!booking) {
+      return res.status(404).json({
+        message:
+          "Booking not found",
+      });
+    }
+
+    const driver =
+      await Driver.findOne({
+        status:
+          "available",
+      });
+
+    if (!driver) {
+      return res.status(404).json({
+        message:
+          "No available driver found",
+      });
+    }
+
+    booking.driver =
+      driver._id;
+
+    booking.bookingStatus =
+      "confirmed";
+
+    driver.status =
+      "assigned";
+
+    await booking.save();
+
+    await driver.save();
+
+    res.status(200).json({
+      message:
+        `${driver.name} assigned successfully`,
+      booking,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+
+  }
+};
+
+export const verifyPayment = async (
+  req,
+  res
+) => {
+  try {
+
+    const booking =
+      await Booking.findById(
+        req.params.id
+      ).populate("user");
+
+    if (!booking) {
+      return res.status(404).json({
+        message:
+          "Booking not found",
+      });
+    }
+
+    booking.paymentStatus =
+      "verified";
+
+    booking.bookingStatus =
+      "confirmed";
+
+    await booking.save();
+
+    await transporter.sendMail({
+      from:
+        process.env.EMAIL_USER,
+
+      to:
+        booking.user.email,
+
+      subject:
+        "Booking Confirmed",
+
+      html: `
+        <h2>Booking Confirmed</h2>
+
+        <p>Hello ${booking.user.name},</p>
+
+        <p>Your payment has been verified successfully.</p>
+
+        <p>
+          Booking Amount:
+          ₹${booking.totalAmount}
+        </p>
+
+        <p>
+          Thank you for choosing our service.
+        </p>
+      `,
+    });
+
+    res.status(200).json({
+      message:
+        "Payment verified and email sent",
+      booking,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+
+  }
+};
+export const rejectPayment = async (
+  req,
+  res
+) => {
+  try {
+
+    const booking =
+      await Booking.findById(
+        req.params.id
+      ).populate("user");
+
+    if (!booking) {
+      return res.status(404).json({
+        message:
+          "Booking not found",
+      });
+    }
+
+    booking.paymentStatus =
+      "rejected";
+
+    booking.bookingStatus =
+      "cancelled";
+
+    await booking.save();
+
+    await transporter.sendMail({
+      from:
+        process.env.EMAIL_USER,
+
+      to:
+        booking.user.email,
+
+      subject:
+        "Payment Rejected",
+
+      html: `
+        <h2>Payment Rejected</h2>
+
+        <p>Hello ${booking.user.name},</p>
+
+        <p>
+          Your payment screenshot could not be verified.
+        </p>
+
+        <p>
+          Please upload a valid payment proof and try again.
+        </p>
+
+        <p>
+          Booking Amount:
+          ₹${booking.totalAmount}
+        </p>
+      `,
+    });
+
+    res.status(200).json({
+      message:
+        "Payment rejected and email sent",
+      booking,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+
   }
 };
 
@@ -195,5 +354,149 @@ export const filterBookings = async (
     res.status(500).json({
       message: error.message,
     });
+  }
+};
+
+// Get Booking By ID
+export const getBookingById = async (
+  req,
+  res
+) => {
+  try {
+
+    const booking =
+      await Booking.findById(
+        req.params.id
+      )
+        .populate(
+          "user",
+          "name email phone"
+        )
+        .populate(
+          "vehicle",
+          "vehicleName vehicleNumber"
+        )
+        .populate(
+          "driver",
+          "name phone"
+        )
+        .populate(
+          "package",
+          "title destination"
+        );
+
+    if (!booking) {
+      return res.status(404).json({
+        message:
+          "Booking not found",
+      });
+    }
+
+    res.status(200).json(
+      booking
+    );
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+
+  }
+};
+
+// Delete Booking
+export const deleteBooking = async (
+  req,
+  res
+) => {
+  try {
+
+    const booking =
+      await Booking.findById(
+        req.params.id
+      );
+
+    if (!booking) {
+      return res.status(404).json({
+        message:
+          "Booking not found",
+      });
+    }
+
+    await booking.deleteOne();
+
+    res.status(200).json({
+      message:
+        "Booking deleted successfully",
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+
+  }
+};
+export const updateBooking = async (
+  req,
+  res
+) => {
+  try {
+
+    const booking =
+      await Booking.findById(
+        req.params.id
+      );
+
+    if (!booking) {
+      return res.status(404).json({
+        message:
+          "Booking not found",
+      });
+    }
+
+    booking.pickupDate =
+      req.body.pickupDate ||
+      booking.pickupDate;
+
+    booking.returnDate =
+      req.body.returnDate ||
+      booking.returnDate;
+
+    booking.totalAmount =
+      req.body.totalAmount ||
+      booking.totalAmount;
+
+    booking.bookingStatus =
+      req.body.bookingStatus ||
+      booking.bookingStatus;
+
+    booking.paymentStatus =
+      req.body.paymentStatus ||
+      booking.paymentStatus;
+
+    booking.driver =
+      req.body.driver ||
+      booking.driver;
+
+    await booking.save();
+
+    res.status(200).json({
+      message:
+        "Booking updated successfully",
+      booking,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message:
+        error.message,
+    });
+
   }
 };
