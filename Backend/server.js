@@ -18,13 +18,15 @@ import fleetRoutes from "./routes/admin/fleetRoutes.js";
 import customerRoutes from "./routes/admin/customerRoutes.js";
 import transporter from "./config/nodemailer.js";
 import adminProfileRoutes from "./routes/admin/profileRoutes.js";
-
+import settingsRoutes from "./routes/admin/settingsRoutes.js";
 
 import userProfileRoutes from "./routes/user/profileRoutes.js";
 import bookingRoutes from "./routes/user/bookingRoutes.js";
 import authRoutes from "./routes/user/authRoutes.js"
-
-
+import userVehicleRoutes from "./routes/user/vehicleRoutes.js";
+import userPackageRoutes from "./routes/user/packageRoutes.js";
+import userSettingsRoutes
+from "./routes/user/settingsRoutes.js";
 
 connectDB();
 
@@ -44,6 +46,11 @@ app.use(
   "/api/admin",
   adminProfileRoutes
 );
+app.use(
+  "/api/admin/settings",
+  settingsRoutes
+);
+
 
 //User
 app.use("/api/user", authRoutes);
@@ -51,13 +58,25 @@ app.use(
   "/api/user/profile",
   userProfileRoutes
 );
+app.use(
+  "/api/user/vehicles",
+  userVehicleRoutes
+);
+
 app.use("/api/user/bookings", bookingRoutes);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/bookings",bookingRoutes);
+app.use(
+  "/api/packages",
+  userPackageRoutes
+);
 app.get("/", (req, res) => {
   res.send("API Running...");
 });
-
+app.use(
+  "/api/settings",
+  userSettingsRoutes
+);
 // Error handlers MUST be at the end
 app.use(notFound);
 app.use(errorHandler);

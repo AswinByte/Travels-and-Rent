@@ -7,7 +7,24 @@ const bookingSchema = mongoose.Schema(
       ref: "User",
       required: true,
     },
+pickupLocation: {
+  type: String,
+  required: true,
+},
 
+dropLocation: {
+  type: String,
+  required: true,
+},
+
+phone: {
+  type: String,
+  required: true,
+},
+
+notes: {
+  type: String,
+},
     vehicle: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vehicle",

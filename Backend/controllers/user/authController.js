@@ -247,23 +247,7 @@ export const resetPassword = async (
         message: "User not found",
       });
     }
-
-    // Debug Logs
-    console.log(
-      "Entered OTP:",
-      otp
-    );
-
-    console.log(
-      "Stored OTP:",
-      user.otp
-    );
-
-    console.log(
-      "OTP Expiry:",
-      user.otpExpire
-    );
-
+    
     // Verify OTP
     if (
       String(user.otp)

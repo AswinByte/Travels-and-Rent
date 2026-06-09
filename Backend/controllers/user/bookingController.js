@@ -4,22 +4,48 @@ import Vehicle from "../../models/Vehicle.js";
 export const createBooking = async (req, res) => {
   try {
     const {
-      vehicle,
+      vehicleId,
+      pickupLocation,
+      dropLocation,
+      phone,
+      notes,
       pickupDate,
       returnDate,
-      totalAmount,
     } = req.body;
+
+    const vehicle = await Vehicle.findById(vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({
+        message: "Vehicle not found",
+      });
+    }
+
+    const start = new Date(pickupDate);
+    const end = new Date(returnDate);
+
+    const totalDays = Math.ceil(
+      (end - start) / (1000 * 60 * 60 * 24)
+    );
+
+    const totalAmount =
+      totalDays * vehicle.pricePerDay;
 
     const booking = await Booking.create({
       user: req.user._id,
-      vehicle,
+      vehicle: vehicleId,
+      pickupLocation,
+      dropLocation,
+      phone,
+      notes,
       pickupDate,
       returnDate,
+      totalDays,
       totalAmount,
+      bookingType: "rental",
     });
 
     res.status(201).json(booking);
-
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -100,11 +126,14 @@ async (req, res) => {
 
     const {
       vehicleId,
+      phone,
+      pickupLocation,
+      dropLocation,
+      notes,
       pickupDate,
       returnDate,
     } = req.body;
 
-    // Find Vehicle
     const vehicle =
       await Vehicle.findById(
         vehicleId
@@ -119,7 +148,6 @@ async (req, res) => {
 
     }
 
-    // Check Availability
     if (
       vehicle.status !==
       "available"
@@ -132,7 +160,6 @@ async (req, res) => {
 
     }
 
-    // Calculate Days
     const pickup =
       new Date(pickupDate);
 
@@ -141,12 +168,10 @@ async (req, res) => {
 
     const totalDays =
       Math.ceil(
-        (drop - pickup)
-        /
+        (drop - pickup) /
         (1000 * 60 * 60 * 24)
       );
 
-    // Prevent invalid dates
     if (totalDays <= 0) {
 
       return res.status(400).json({
@@ -156,55 +181,70 @@ async (req, res) => {
 
     }
 
-    // Rental Price
     const totalAmount =
-      totalDays
-      *
+      totalDays *
       vehicle.pricePerDay;
 
-    // Create Booking
     const booking =
-      await Booking.create({
+  await Booking.create({
 
-        user: req.user._id,
+    user:
+      req.user._id,
 
-        vehicle: vehicleId,
+    vehicle:
+      vehicleId,
 
-        pickupDate,
+    phone,
 
-        returnDate,
+    pickupLocation,
 
-        totalDays,
+    dropLocation,
 
-        totalAmount,
+    notes,
 
-        bookingType:
-          "rental",
+    pickupDate,
 
-        bookingStatus:
-          "pending",
+    returnDate,
 
-        paymentStatus:
-          "pending",
+    totalDays,
 
-      });
+    totalAmount,
 
-    // Update Vehicle Status
+    bookingType:
+      "rental",
+
+    bookingStatus:
+      "pending",
+
+    paymentStatus:
+      "pending",
+
+    paymentScreenshot:
+      req.file
+        ? req.file.path
+        : "",
+
+  });
+
     vehicle.status =
       "booked";
 
     await vehicle.save();
 
     res.status(201).json({
+
       message:
         "Rental booking created",
+
       booking,
+
     });
 
   } catch (error) {
 
     res.status(500).json({
-      message: error.message,
+      message:
+        error.message,
     });
 
   }

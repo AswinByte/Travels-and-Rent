@@ -26,6 +26,7 @@ router.post(
 router.post(
   "/rental",
   protect,
+  upload.single("screenshot"),
   createRentalBooking
 );
 

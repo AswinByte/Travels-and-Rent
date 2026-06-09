@@ -12,6 +12,12 @@ const adminSettingsSchema = new mongoose.Schema({
   accountNumber: String,
   ifscCode: String,
   qrCode: String,
+
+  isPaymentEnabled: {
+    type: Boolean,
+    default: true,
+  },
+
 }, {
   timestamps: true,
 });
