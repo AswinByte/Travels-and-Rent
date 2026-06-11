@@ -10,7 +10,7 @@ api.interceptors.request.use(
 
     const token =
       localStorage.getItem(
-        "token"
+        "adminToken"
       );
 
     if (token) {

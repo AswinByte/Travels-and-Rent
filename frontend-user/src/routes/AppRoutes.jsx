@@ -15,6 +15,10 @@ import VehicleDetails from "../pages/rentals/VehicleDetails";
 
 
 import BookingPage from "../pages/bookings/BookingPage";
+import PackageBookingPage from "../pages/bookings/PackageBookingPage";
+import MyBookings from "../pages/bookings/MyBookings";
+import BookingDetails from "../pages/bookings/BookingDetails";
+import PackageDetails from "../pages/packages/PackageDetails";
 
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
@@ -68,6 +72,37 @@ const AppRoutes = () => {
     </ProtectedRoute>
   }
 />
+
+<Route
+  path="/package-booking/:id"
+  element={
+    <ProtectedRoute>
+      <PackageBookingPage />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/packages/:id"
+  element={<PackageDetails />}
+/>
+<Route
+  path="/my-bookings"
+  element={
+    <ProtectedRoute>
+      <MyBookings />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/my-bookings/:id"
+  element={
+    <ProtectedRoute>
+      <BookingDetails />
+    </ProtectedRoute>
+  }
+/>
+
 
     </Routes>
   );

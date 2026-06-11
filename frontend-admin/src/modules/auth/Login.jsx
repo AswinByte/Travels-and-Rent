@@ -19,15 +19,19 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const data = await loginUser({
-        email,
-        password,
-      });
+     const data = await loginUser({
+  email,
+  password,
+});
+console.log(data);
+if (data.role !== "admin") {
+  alert("Admin access only");
+  return;
+}
 
-      login(data.token, data.user);
+login(data.token);
 
-      navigate("/");
-
+navigate("/");
     } catch (error) {
       console.log(error);
       alert("Invalid Credentials");

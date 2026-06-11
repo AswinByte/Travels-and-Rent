@@ -2,6 +2,7 @@ import Booking from "../../models/Booking.js";
 import Driver from "../../models/Driver.js";
 import User from "../../models/User.js";
 import transporter from "../../config/nodemailer.js";
+import Vehicle from "../../models/Vehicle.js";
 
 // Get All Bookings
 export const getAllBookings = async (req, res) => {
@@ -33,7 +34,16 @@ export const confirmBooking = async (req, res) => {
 
     booking.bookingStatus = "confirmed";
 
-    await booking.save();
+if (booking.vehicle) {
+  await Vehicle.findByIdAndUpdate(
+    booking.vehicle,
+    {
+      status: "booked",
+    }
+  );
+}
+
+await booking.save();
 
     res.status(200).json({
       message: "Booking confirmed",
@@ -60,7 +70,16 @@ export const cancelBooking = async (req, res) => {
 
     booking.bookingStatus = "cancelled";
 
-    await booking.save();
+if (booking.vehicle) {
+  await Vehicle.findByIdAndUpdate(
+    booking.vehicle,
+    {
+      status: "available",
+    }
+  );
+}
+
+await booking.save();
 
     // Make driver available again
     if (booking.driver) {
@@ -98,9 +117,18 @@ export const completeBooking = async (req, res) => {
       });
     }
 
-    booking.bookingStatus = "completed";
+   booking.bookingStatus = "completed";
 
-    await booking.save();
+if (booking.vehicle) {
+  await Vehicle.findByIdAndUpdate(
+    booking.vehicle,
+    {
+      status: "available",
+    }
+  );
+}
+
+await booking.save();
 
     // Make driver available again
     if (booking.driver) {
@@ -126,63 +154,40 @@ export const completeBooking = async (req, res) => {
   }
 };
 //assignDriver
-export const assignDriver = async (
-  req,
-  res
-) => {
+export const assignDriver = async (req, res) => {
   try {
-
-    const booking =
-      await Booking.findById(
-        req.params.id
-      );
+    const booking = await Booking.findById(req.params.id);
 
     if (!booking) {
-      return res.status(404).json({
-        message:
-          "Booking not found",
-      });
+      return res.status(404).json({ message: "Booking not found" });
     }
 
-    const driver =
-      await Driver.findOne({
-        status:
-          "available",
-      });
+    const { driverId } = req.body;
+    let driver;
 
-    if (!driver) {
-      return res.status(404).json({
-        message:
-          "No available driver found",
-      });
+    if (driverId) {
+      driver = await Driver.findById(driverId);
+    } else {
+      driver = await Driver.findOne({ status: "available" });
     }
 
-    booking.driver =
-      driver._id;
+    if (!driver || driver.status !== "available") {
+      return res.status(400).json({ message: "Selected driver is not available" });
+    }
 
-    booking.bookingStatus =
-      "confirmed";
-
-    driver.status =
-      "assigned";
+    booking.driver = driver._id;
+    booking.bookingStatus = "confirmed";
+    driver.status = "assigned";
 
     await booking.save();
-
     await driver.save();
 
     res.status(200).json({
-      message:
-        `${driver.name} assigned successfully`,
+      message: `${driver.name} assigned successfully`,
       booking,
     });
-
   } catch (error) {
-
-    res.status(500).json({
-      message:
-        error.message,
-    });
-
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -205,12 +210,21 @@ export const verifyPayment = async (
     }
 
     booking.paymentStatus =
-      "verified";
+  "verified";
 
-    booking.bookingStatus =
-      "confirmed";
+booking.bookingStatus =
+  "confirmed";
 
-    await booking.save();
+if (booking.vehicle) {
+  await Vehicle.findByIdAndUpdate(
+    booking.vehicle,
+    {
+      status: "booked",
+    }
+  );
+}
+
+await booking.save();
 
     await transporter.sendMail({
       from:
@@ -274,13 +288,21 @@ export const rejectPayment = async (
     }
 
     booking.paymentStatus =
-      "rejected";
+  "rejected";
 
-    booking.bookingStatus =
-      "cancelled";
+booking.bookingStatus =
+  "cancelled";
 
-    await booking.save();
+if (booking.vehicle) {
+  await Vehicle.findByIdAndUpdate(
+    booking.vehicle,
+    {
+      status: "available",
+    }
+  );
+}
 
+await booking.save();
     await transporter.sendMail({
       from:
         process.env.EMAIL_USER,
@@ -424,8 +446,16 @@ export const deleteBooking = async (
           "Booking not found",
       });
     }
+if (booking.vehicle) {
+  await Vehicle.findByIdAndUpdate(
+    booking.vehicle,
+    {
+      status: "available",
+    }
+  );
+}
 
-    await booking.deleteOne();
+await booking.deleteOne(); 
 
     res.status(200).json({
       message:

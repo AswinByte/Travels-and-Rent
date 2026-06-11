@@ -8,7 +8,7 @@ const adminSettingsSchema = new mongoose.Schema({
   gstNumber: String,
 
   upiId: String,
-  accountName: String,
+  accountHolderName: String,
   accountNumber: String,
   ifscCode: String,
   qrCode: String,

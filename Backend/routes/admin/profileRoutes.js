@@ -3,14 +3,14 @@ import express from "express";
 import {
   getProfile,
   updateProfile,
+  changePassword,
 } from "../../controllers/admin/profileController.js";
 
 import {
   protect,
 } from "../../middleware/authMiddleware.js";
 
-const router =
-  express.Router();
+const router = express.Router();
 
 router.get(
   "/profile",
@@ -22,6 +22,12 @@ router.put(
   "/profile",
   protect,
   updateProfile
+);
+
+router.put(
+  "/profile/change-password",
+  protect,
+  changePassword
 );
 
 export default router;

@@ -9,3 +9,4 @@ export const getPackageById = async (id) => {
   const response = await api.get(`/packages/${id}`);
   return response.data;
 };
+

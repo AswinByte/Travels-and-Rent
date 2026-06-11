@@ -3,8 +3,10 @@ import upload from "../../middleware/uploadMiddleware.js";
 import {
   createBooking,
   getMyBookings,
+  getBookingById,
   uploadPaymentScreenshot,
-  createRentalBooking
+  createRentalBooking,
+  createPackageBooking
 } from "../../controllers/user/bookingController.js";
 
 import { protect } from "../../middleware/authMiddleware.js";
@@ -15,6 +17,8 @@ const router = express.Router();
 router.post("/", protect, createBooking);
 
 router.get("/my-bookings", protect, getMyBookings);
+
+router.get("/:id", protect, getBookingById);
 
 router.post(
   "/:id/upload-payment",
@@ -28,6 +32,13 @@ router.post(
   protect,
   upload.single("screenshot"),
   createRentalBooking
+);
+
+router.post(
+  "/package",
+  protect,
+  upload.single("screenshot"),
+  createPackageBooking
 );
 
 export default router;

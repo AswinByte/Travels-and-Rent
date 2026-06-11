@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext =
   createContext();
 
@@ -10,7 +11,7 @@ export const AuthProvider = ({
   const [token, setToken] =
     useState(
       localStorage.getItem(
-        "token"
+        "userToken"
       )
     );
 
@@ -26,7 +27,7 @@ export const AuthProvider = ({
   const login = (jwt, user) => {
 
   localStorage.setItem(
-    "token",
+    "userToken",
     jwt
   );
 
@@ -42,7 +43,7 @@ export const AuthProvider = ({
   const logout = () => {
 
     localStorage.removeItem(
-      "token"
+      "userToken"
     );
 
     localStorage.removeItem(

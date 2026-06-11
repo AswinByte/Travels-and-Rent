@@ -1,5 +1,6 @@
 import Booking from "../../models/Booking.js";
 import Vehicle from "../../models/Vehicle.js";
+import Package from "../../models/Package.js";
 // Create Booking
 export const createBooking = async (req, res) => {
   try {
@@ -62,6 +63,31 @@ export const getMyBookings = async (req, res) => {
 
     res.status(200).json(bookings);
 
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// Get Single Booking By ID for User
+export const getBookingById = async (req, res) => {
+  try {
+    const booking = await Booking.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    })
+      .populate("vehicle")
+      .populate("driver", "name phone")
+      .populate("package");
+
+    if (!booking) {
+      return res.status(404).json({
+        message: "Booking not found",
+      });
+    }
+
+    res.status(200).json(booking);
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -249,4 +275,66 @@ async (req, res) => {
 
   }
 
+};
+
+// Create Package Booking
+export const createPackageBooking = async (req, res) => {
+  try {
+    const {
+      packageId,
+      phone,
+      pickupLocation,
+      dropLocation,
+      notes,
+      pickupDate,
+      returnDate,
+    } = req.body;
+
+    const pkg = await Package.findById(packageId);
+
+    if (!pkg) {
+      return res.status(404).json({ message: "Package not found" });
+    }
+
+    if (pkg.availableSeats <= 0) {
+      return res.status(400).json({ message: "Package is fully booked" });
+    }
+
+    const start = new Date(pickupDate);
+    const end = new Date(returnDate);
+    const totalDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+    if (totalDays <= 0) {
+      return res.status(400).json({ message: "Invalid booking dates" });
+    }
+
+    const totalAmount = pkg.price;
+
+    const booking = await Booking.create({
+      user: req.user._id,
+      package: packageId,
+      phone,
+      pickupLocation,
+      dropLocation,
+      notes,
+      pickupDate,
+      returnDate,
+      totalDays,
+      totalAmount,
+      bookingType: "package",
+      bookingStatus: "pending",
+      paymentStatus: "pending",
+      paymentScreenshot: req.file ? req.file.path : "",
+    });
+
+    pkg.availableSeats -= 1;
+    await pkg.save();
+
+    res.status(201).json({
+      message: "Package booking created",
+      booking,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

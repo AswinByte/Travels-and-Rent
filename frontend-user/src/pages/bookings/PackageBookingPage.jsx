@@ -1,145 +1,74 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { createPackageBooking } from "../../services/bookingService";
+import { getSettings } from "../../services/settingsService";
 
-import {
-createRentalBooking,
-} from "../../services/bookingService";
+const PackageBookingPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-import {
-getSettings,
-} from "../../services/settingsService";
+  const [settings, setSettings] = useState(null);
+  const [screenshot, setScreenshot] = useState(null);
+  const [loading, setLoading] = useState(false);
 
+  const [formData, setFormData] = useState({
+    phone: "",
+    pickupLocation: "",
+    dropLocation: "",
+    pickupDate: "",
+    returnDate: "",
+    notes: "",
+  });
 
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await getSettings();
+        setSettings(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
-const BookingPage = () => {
-const { id } = useParams();
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-const [settings, setSettings] =
-useState(null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!screenshot) {
+      return alert("Please upload a payment screenshot first");
+    }
 
-
-
-const [screenshot, setScreenshot] =
-useState(null);
-
-const [formData, setFormData] =
-useState({
-customerName: "",
-phone: "",
-pickupLocation: "",
-dropLocation: "",
-pickupDate: "",
-returnDate: "",
-notes: "",
-});
-
-const handleChange = (e) => {
-setFormData({
-...formData,
-[e.target.name]:
-e.target.value,
-});
-};
-
-const handleSubmit = async (e) => {
-e.preventDefault();
-
-try {
-
-const bookingData =
-new FormData();
-
-bookingData.append(
-"vehicleId",
-id
-);
-
-bookingData.append(
-"phone",
-formData.phone
-);
-
-bookingData.append(
-"pickupLocation",
-formData.pickupLocation
-);
-
-bookingData.append(
-"dropLocation",
-formData.dropLocation
-);
-
-bookingData.append(
-"notes",
-formData.notes
-);
-
-bookingData.append(
-"pickupDate",
-formData.pickupDate
-);
-
-bookingData.append(
-"returnDate",
-formData.returnDate
-);
-
-bookingData.append(
-"screenshot",
-screenshot
-);
-
-
-    await createRentalBooking(
-      bookingData
-    );
-
-
-
-  alert(
-    "Booking Created Successfully"
-  );
-
-} catch (error) {
-
-  console.log(error);
-
-  alert(
-    error.response?.data
-      ?.message ||
-      "Booking Failed"
-  );
-
-}
-
-};
-
-
-useEffect(() => {
-
-const fetchSettings =
-  async () => {
-
+    setLoading(true);
     try {
+      const bookingData = new FormData();
+      bookingData.append("packageId", id);
+      bookingData.append("phone", formData.phone);
+      bookingData.append("pickupLocation", formData.pickupLocation);
+      bookingData.append("dropLocation", formData.dropLocation);
+      bookingData.append("notes", formData.notes);
+      bookingData.append("pickupDate", formData.pickupDate);
+      bookingData.append("returnDate", formData.returnDate);
+      bookingData.append("screenshot", screenshot);
 
-      const data =
-        await getSettings();
-
-      setSettings(data);
-
+      await createPackageBooking(bookingData);
+      alert("Package Booking Created Successfully");
+      navigate("/my-bookings");
     } catch (error) {
-
       console.log(error);
-
+      alert(error.response?.data?.message || "Package Booking Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
-fetchSettings();
-
-
-}, []);
-
-return (
+  return (
   <div
     style={{
       background: "#F8FAFC",
@@ -285,7 +214,7 @@ return (
 
             <textarea
               name="notes"
-              placeholder="Special Notes"
+              placeholder="Any special requirement?"
               value={formData.notes}
               onChange={handleChange}
               rows="5"
@@ -513,6 +442,9 @@ return (
 
             <button
               type="submit"
+               type="submit"
+  disabled={loading}
+  
               style={{
                 width: "100%",
                 marginTop: "30px",
@@ -657,4 +589,4 @@ const inputStyle = {
   outline: "none",
 };
 
-export default BookingPage;
+export default PackageBookingPage;

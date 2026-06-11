@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const PackageCard = ({ pkg }) => {
   return (
     <div
@@ -10,7 +12,7 @@ const PackageCard = ({ pkg }) => {
       }}
     >
       <img
-        src={pkg.image}
+        src={`${pkg.image}`}
         alt={pkg.title}
         style={{
           width: "100%",
@@ -26,6 +28,7 @@ const PackageCard = ({ pkg }) => {
       >
         <h3
           style={{
+            fontSize: "28px",
             color: "#0F172A",
             marginBottom: "10px",
           }}
@@ -39,31 +42,66 @@ const PackageCard = ({ pkg }) => {
             marginBottom: "10px",
           }}
         >
-          {pkg.duration}
+          📍 {pkg.destination}
         </p>
 
-        <h4
+        <p
           style={{
-            color: "#2563EB",
+            color: "#475569",
+            minHeight: "60px",
             marginBottom: "15px",
           }}
         >
-          ₹{pkg.price}
-        </h4>
+          {pkg.description}
+        </p>
 
-        <button
+        <div
           style={{
-            width: "100%",
-            padding: "12px",
-            background: "#2563EB",
-            color: "#fff",
-            border: "none",
-            borderRadius: "10px",
-            cursor: "pointer",
+            display: "flex",
+            justifyContent:
+              "space-between",
+            alignItems: "center",
+            marginBottom: "20px",
           }}
         >
-          View Package
-        </button>
+          <span
+            style={{
+              background: "#EFF6FF",
+              color: "#2563EB",
+              padding: "8px 15px",
+              borderRadius: "20px",
+              fontWeight: "600",
+            }}
+          >
+            🕒 {pkg.duration}
+          </span>
+
+          <span
+            style={{
+              color: "#16A34A",
+              fontSize: "28px",
+              fontWeight: "700",
+            }}
+          >
+            ₹{pkg.price}
+          </span>
+        </div>
+
+        <Link
+  to={`/packages/${pkg._id}`}
+  style={{
+    display: "block",
+    textAlign: "center",
+    padding: "14px",
+    background: "#2563EB",
+    color: "#fff",
+    borderRadius: "10px",
+    textDecoration: "none",
+    fontWeight: "600",
+  }}
+>
+  View Package
+</Link>
       </div>
     </div>
   );
