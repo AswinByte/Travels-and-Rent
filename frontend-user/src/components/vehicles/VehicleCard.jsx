@@ -14,7 +14,7 @@ const VehicleCard = ({ vehicle }) => {
       <div style={styles.imageWrapper}>
         {displayImage ? (
           <img
-            src={`http://localhost:5000/${displayImage}`}
+            src={displayImage}
             alt={displayName}
             style={styles.image}
           />

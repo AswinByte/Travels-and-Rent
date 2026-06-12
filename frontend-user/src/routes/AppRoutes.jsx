@@ -10,6 +10,7 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
+import Profile from "../pages/profile/Profile";
 
 import VehicleDetails from "../pages/rentals/VehicleDetails";
 
@@ -45,7 +46,10 @@ const AppRoutes = () => {
   path="/contact"
   element={<Contact />}
 />
-
+<Route
+  path="/profile"
+  element={<Profile />}
+/>
 <Route path="/login" element={<Login />} />
 
 <Route path="/register" element={<Register />} />

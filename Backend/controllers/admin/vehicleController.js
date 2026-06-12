@@ -3,6 +3,8 @@ import Vehicle from "../../models/Vehicle.js";
 // Add Vehicle
 export const addVehicle = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+console.log("FILE:", req.file);
     if (req.file) {
       req.body.image = req.file.path;
     }
@@ -128,49 +130,91 @@ export const deleteVehicle = async (req, res) => {
   }
 };
 
-export const updateVehicle =
-  async (req, res) => {
+export const updateVehicle = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(
+      req.params.id
+    );
 
-    try {
-
-      const vehicle =
-        await Vehicle.findById(
-          req.params.id
-        );
-
-      if (!vehicle) {
-
-        return res.status(404)
-          .json({
-            message:
-              "Vehicle not found",
-          });
-      }
-
-      if (req.file) {
-
-        req.body.image =
-          req.file.path;
-      }
-
-      Object.assign(
-        vehicle,
-        req.body
-      );
-
-      await vehicle.save();
-
-      res.status(200).json(
-        vehicle
-      );
-
-    } catch (error) {
-console.log(error);
-      res.status(500).json({
-        message:
-          error.message,
+    if (!vehicle) {
+      return res.status(404).json({
+        message: "Vehicle not found",
       });
     }
+
+    // New image uploaded
+    if (req.file) {
+      req.body.image = req.file.path;
+    }
+
+    vehicle.vehicleName =
+      req.body.vehicleName ||
+      vehicle.vehicleName;
+
+    vehicle.vehicleNumber =
+      req.body.vehicleNumber ||
+      vehicle.vehicleNumber;
+
+    vehicle.type =
+      req.body.type ||
+      vehicle.type;
+
+    vehicle.brand =
+      req.body.brand ||
+      vehicle.brand;
+
+    vehicle.model =
+      req.body.model ||
+      vehicle.model;
+
+    vehicle.year =
+      req.body.year ||
+      vehicle.year;
+
+    vehicle.seats =
+      req.body.seats ||
+      vehicle.seats;
+
+    vehicle.fuelType =
+      req.body.fuelType ||
+      vehicle.fuelType;
+
+    vehicle.mileage =
+      req.body.mileage ||
+      vehicle.mileage;
+
+    vehicle.insuranceExpiry =
+      req.body.insuranceExpiry ||
+      vehicle.insuranceExpiry;
+
+    vehicle.serviceDate =
+      req.body.serviceDate ||
+      vehicle.serviceDate;
+
+    vehicle.pricePerDay =
+      req.body.pricePerDay ||
+      vehicle.pricePerDay;
+
+    vehicle.status =
+      req.body.status ||
+      vehicle.status;
+
+    if (req.body.image) {
+      vehicle.image =
+        req.body.image;
+    }
+
+    await vehicle.save();
+
+    res.status(200).json(vehicle);
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
 //markMaintenance

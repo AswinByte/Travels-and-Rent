@@ -290,7 +290,7 @@ const PackageBookingPage = () => {
           }}
         >
           <img
-            src={`http://localhost:5000/${settings.qrCode}`}
+            src={settings.qrCode}
             alt="QR Code"
             style={{
               width: "280px",

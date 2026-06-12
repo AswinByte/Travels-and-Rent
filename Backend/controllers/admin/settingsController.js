@@ -67,47 +67,47 @@ export const updateSettings =
     }
 };
 
-export const uploadQrCode =
-  async (req, res) => {
+export const uploadQrCode = async (req, res) => {
+  try {
 
-    try {
+    console.log("===== QR UPLOAD START =====");
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
 
-      let settings =
-        await AdminSettings.findOne();
+    let settings = await AdminSettings.findOne();
 
-      if (!settings) {
-        settings =
-          await AdminSettings.create(
-            {}
-          );
-      }
-
-      if (!req.file) {
-
-        return res.status(400)
-          .json({
-            message:
-              "QR image required",
-          });
-      }
-
-      settings.qrCode =
-        req.file.path;
-
-      await settings.save();
-
-      res.status(200).json({
-        message:
-          "QR uploaded successfully",
-        settings,
-      });
-
-    } catch (error) {
-
-      res.status(500).json({
-        message:
-          error.message,
-      });
-
+    if (!settings) {
+      settings = await AdminSettings.create({});
     }
+
+    if (!req.file) {
+      return res.status(400).json({
+        message: "QR image required",
+      });
+    }
+
+    settings.qrCode =
+  req.file.path;
+
+console.log("Saving:");
+console.log(settings);
+
+await settings.save();
+
+console.log("Saved Successfully");
+
+    res.status(200).json({
+      message: "QR uploaded successfully",
+      settings,
+    });
+
+  } catch (error) {
+
+    console.log("===== QR UPLOAD ERROR =====");
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };

@@ -1,40 +1,17 @@
 import multer from "multer";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
-const storage =
-  multer.diskStorage({
+console.log(cloudinary.config());
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => ({
+    folder: "travels-rent",
+    format: file.mimetype.split("/")[1],
+    public_id: Date.now() + "-" + file.originalname,
+  }),
+});
 
-    destination:
-      function (
-        req,
-        file,
-        cb
-      ) {
-
-        cb(
-          null,
-          "uploads/"
-        );
-      },
-
-    filename:
-      function (
-        req,
-        file,
-        cb
-      ) {
-
-        cb(
-          null,
-          Date.now() +
-          "-" +
-          file.originalname
-        );
-      },
-  });
-
-const upload =
-  multer({
-    storage,
-  });
+const upload = multer({ storage });
 
 export default upload;

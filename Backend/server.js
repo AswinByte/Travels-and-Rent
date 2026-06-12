@@ -28,10 +28,31 @@ import userPackageRoutes from "./routes/user/packageRoutes.js";
 import userSettingsRoutes
 from "./routes/user/settingsRoutes.js";
 
-connectDB();
+import cloudinary from "./config/cloudinary.js";
 
+connectDB();
+console.log(
+  "Cloud:",
+  process.env.CLOUDINARY_CLOUD_NAME
+);
+
+console.log(
+  "Key:",
+  process.env.CLOUDINARY_API_KEY
+);
+
+console.log(
+  "Secret:",
+  process.env.CLOUDINARY_API_SECRET
+    ? "FOUND"
+    : "MISSING"
+);
 const app = express();
 app.use(cors());
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 //Admin
 app.use(express.json());
 app.use("/api/admin/vehicles", vehicleRoutes);

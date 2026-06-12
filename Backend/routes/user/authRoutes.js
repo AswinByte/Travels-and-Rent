@@ -18,7 +18,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 
 // Protected Route
-router.get("/profile", protect, getProfile);
+// router.get("/profile", protect, getProfile);
 
 router.post("/forgot-password", forgotPassword);
 

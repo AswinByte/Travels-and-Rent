@@ -79,96 +79,80 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* User Actions */}
-      <div
+     {/* User Actions */}
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+  }}
+>
+  {userInfo ? (
+    <>
+      <Link
+        to="/profile"
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "15px",
+          textDecoration: "none",
+          fontWeight: "600",
+          color: "#0F172A",
+          cursor: "pointer",
         }}
       >
-        {userInfo ? (
-          <>
-            <span
-              style={{
-                fontWeight: "600",
-                color: "#0F172A",
-              }}
-            >
-              👤 {userInfo.name}
-            </span>
+        👤 {userInfo.name}
+      </Link>
 
-            <Link
-              to="/my-bookings"
-              style={{
-                textDecoration:
-                  "none",
-                color: "#2563EB",
-                fontWeight: "600",
-              }}
-            >
-              My Bookings
-            </Link>
+      <Link
+        to="/my-bookings"
+        style={{
+          textDecoration: "none",
+          color: "#2563EB",
+          fontWeight: "600",
+        }}
+      >
+        My Bookings
+      </Link>
 
-            <button
-              onClick={() => {
-  localStorage.removeItem(
-    "token"
-  );
+      <button
+        onClick={logout}
+        style={{
+          padding: "10px 20px",
+          border: "none",
+          background: "#EF4444",
+          color: "#fff",
+          borderRadius: "10px",
+          cursor: "pointer",
+        }}
+      >
+        Logout
+      </button>
+    </>
+  ) : (
+    <>
+      <Link
+        to="/login"
+        style={{
+          ...loginBtn,
+          textDecoration: "none",
+          display: "inline-block",
+        }}
+      >
+        Login
+      </Link>
 
-  localStorage.removeItem(
-    "userInfo"
-  );
+      <Link
+        to="/register"
+        style={{
+          ...registerBtn,
+          textDecoration: "none",
+          display: "inline-block",
+        }}
+      >
+        Register
+      </Link>
+    </>
+  )}
+</div>
 
-  window.location.href =
-    "/";
-}}
-              style={{
-                padding:
-                  "10px 20px",
-                border: "none",
-                background:
-                  "#EF4444",
-                color: "#fff",
-                borderRadius:
-                  "10px",
-                cursor: "pointer",
-              }}
-            onClick={logout}
-            >
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/login"
-              style={{
-                ...loginBtn,
-                textDecoration:
-                  "none",
-                display:
-                  "inline-block",
-              }}
-            >
-              Login
-            </Link>
-
-            <Link
-              to="/register"
-              style={{
-                ...registerBtn,
-                textDecoration:
-                  "none",
-                display:
-                  "inline-block",
-              }}
-            >
-              Register
-            </Link>
-          </>
-        )}
-      </div>
     </nav>
   );
 };

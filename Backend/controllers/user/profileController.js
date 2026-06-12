@@ -1,5 +1,7 @@
 import User from "../../models/User.js";
 import Booking from "../../models/Booking.js";
+import Vehicle from "../../models/Vehicle.js";
+import Package from "../../models/Package.js";
 import bcrypt from "bcryptjs";
 
 // Get User Profile
@@ -8,21 +10,22 @@ export const getUserProfile = async (
   res
 ) => {
   try {
+    console.log("req.user in getUserProfile:", req.user);
 
     const user = await User.findById(
       req.user._id
     ).select("-password");
 
-    // User Bookings
     const bookings = await Booking.find({
       user: req.user._id,
-    }).populate("vehicle");
+    })
+      .populate("vehicle")
+      .populate("package")
+      .sort({ createdAt: -1 });
 
-    // Booking Count
     const bookingCount =
       bookings.length;
 
-    // Completed Trips
     const completedTrips =
       bookings.filter(
         (booking) =>
@@ -30,29 +33,38 @@ export const getUserProfile = async (
           "completed"
       ).length;
 
-    // Payment History
-    const paymentHistory =
+    const paidBookings =
       bookings.filter(
         (booking) =>
           booking.paymentStatus ===
-          "paid"
-      );
+          "verified"
+      ).length;
+
+    console.log("SENDING PROFILE RESPONSE:", {
+      user,
+      bookingCount,
+      completedTrips,
+      paidBookings,
+      recentBookingsCount: bookings.slice(0, 5).length,
+    });
 
     res.status(200).json({
       user,
       bookingCount,
       completedTrips,
-      paymentHistory,
+      paidBookings,
       recentBookings:
-        bookings.slice(-5),
+        bookings.slice(0, 5),
     });
 
   } catch (error) {
+    console.error("ERROR IN getUserProfile:", error);
     res.status(500).json({
       message: error.message,
     });
   }
 };
+
 // Update User Profile
 export const updateUserProfile = async (
   req,

@@ -60,7 +60,7 @@ export const uploadQrCode = async (
   formData.append(
     "qrCode",
     file
-  );
+    );
 
   const response =
     await api.post(
