@@ -33,7 +33,6 @@ router.post(
   protect,
   admin,
   (req, res, next) => {
-    console.log("VEHICLE ROUTE HIT");
     next();
   },
   upload.single("image"),

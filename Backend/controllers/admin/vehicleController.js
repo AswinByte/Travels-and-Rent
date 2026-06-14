@@ -3,8 +3,7 @@ import Vehicle from "../../models/Vehicle.js";
 // Add Vehicle
 export const addVehicle = async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-console.log("FILE:", req.file);
+
     if (req.file) {
       req.body.image = req.file.path;
     }

@@ -38,11 +38,11 @@ const Login = () => {
         role: data.role,
       });
 
-      if (data.role === "admin") {
-        window.location.href = "http://localhost:5173";
-      } else {
-        navigate("/");
-      }
+     if (data.role === "admin") {
+  window.location.href = "/admin/dashboard";
+} else {
+  navigate("/");
+}
     } catch (error) {
       console.error("Login execution error:", error);
       setErrorMessage(

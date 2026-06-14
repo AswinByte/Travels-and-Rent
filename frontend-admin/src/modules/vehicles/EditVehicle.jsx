@@ -509,7 +509,7 @@ const EditVehicle = () => {
           {formData.image && (
 
             <img
-              src={`http://localhost:5000/${formData.image}`}
+              src={formData.image}
               alt="vehicle"
               style={
                 styles.imagePreview

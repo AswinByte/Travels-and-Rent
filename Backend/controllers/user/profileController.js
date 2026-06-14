@@ -10,7 +10,6 @@ export const getUserProfile = async (
   res
 ) => {
   try {
-    console.log("req.user in getUserProfile:", req.user);
 
     const user = await User.findById(
       req.user._id
@@ -40,13 +39,6 @@ export const getUserProfile = async (
           "verified"
       ).length;
 
-    console.log("SENDING PROFILE RESPONSE:", {
-      user,
-      bookingCount,
-      completedTrips,
-      paidBookings,
-      recentBookingsCount: bookings.slice(0, 5).length,
-    });
 
     res.status(200).json({
       user,
@@ -58,7 +50,6 @@ export const getUserProfile = async (
     });
 
   } catch (error) {
-    console.error("ERROR IN getUserProfile:", error);
     res.status(500).json({
       message: error.message,
     });

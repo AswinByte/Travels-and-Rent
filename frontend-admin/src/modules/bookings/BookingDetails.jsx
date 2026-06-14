@@ -421,7 +421,7 @@ setDrivers(
 >
   {booking.paymentScreenshot ? (
     <img
-       src={`http://localhost:5000/${booking.paymentScreenshot}`}
+       src={booking.paymentScreenshot}
 
       alt="Payment"
       style={{

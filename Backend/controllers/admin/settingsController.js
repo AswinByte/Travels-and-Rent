@@ -70,9 +70,7 @@ export const updateSettings =
 export const uploadQrCode = async (req, res) => {
   try {
 
-    console.log("===== QR UPLOAD START =====");
-    console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
+    
 
     let settings = await AdminSettings.findOne();
 
@@ -89,12 +87,9 @@ export const uploadQrCode = async (req, res) => {
     settings.qrCode =
   req.file.path;
 
-console.log("Saving:");
-console.log(settings);
 
 await settings.save();
 
-console.log("Saved Successfully");
 
     res.status(200).json({
       message: "QR uploaded successfully",
@@ -103,7 +98,6 @@ console.log("Saved Successfully");
 
   } catch (error) {
 
-    console.log("===== QR UPLOAD ERROR =====");
     console.log(error);
 
     res.status(500).json({

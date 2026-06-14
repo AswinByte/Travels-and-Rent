@@ -6,9 +6,6 @@ export const logger = (
   const time =
     new Date().toLocaleString();
 
-  console.log(
-    `\n[${time}] ${message}`
-  );
 
   if (data) {
     console.log(data);

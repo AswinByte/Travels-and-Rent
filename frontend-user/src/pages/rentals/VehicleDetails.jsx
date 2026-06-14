@@ -61,7 +61,7 @@ const VehicleDetails = () => {
         {/* Left Column: Image Media Gallery Section */}
         <div style={styles.imageSection}>
           <img
-            src={`http://localhost:5000/${vehicle.image}`}
+            src={vehicle.image}
             alt={displayName}
             style={styles.mainImage}
           />

@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
   setToken(null);
 
   window.location.href =
-    "http://localhost:5174/login";
+    "/login";
 };
 
   return (

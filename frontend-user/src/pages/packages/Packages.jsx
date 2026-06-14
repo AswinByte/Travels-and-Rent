@@ -192,14 +192,19 @@ const Packages = () => {
               <div style={styles.gridContainer}>
                 {filteredPackages.map((pkg) => (
                   <div key={pkg._id} style={styles.packageCard}>
-                    <div style={{
-                      height: "200px",
-                      backgroundColor: "#e2e8f0",
-                      backgroundImage: `url(${pkg.image?.startsWith("http") ? pkg.image : `http://localhost:5000/${pkg.image}`})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center"
-                    }} />
-                    
+                    <div
+  style={{
+    height: "200px",
+    backgroundColor: "#e2e8f0",
+    backgroundImage: `url(${
+      pkg.image?.startsWith("http")
+        ? pkg.image
+        : `${import.meta.env.VITE_API_URL}/${pkg.image}`
+    })`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+/>
                     <div style={styles.cardBody}>
                       <h2 style={styles.cardTitle}>{pkg.title}</h2>
                       <p style={styles.cardMetaRow}>

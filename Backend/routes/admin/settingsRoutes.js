@@ -20,21 +20,17 @@ router.get(
 router.post(
   "/upload-qr",
   (req, res, next) => {
-    console.log("MIDDLEWARE START");
     next();
   },
 
   (req, res, next) => {
     upload.single("qrCode")(req, res, (err) => {
       if (err) {
-        console.log("MULTER ERROR:");
-        console.log(err);
         return res.status(500).json({
           message: err.message,
         });
       }
 
-      console.log("UPLOAD SUCCESS");
       next();
     });
   },

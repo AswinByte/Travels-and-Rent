@@ -31,30 +31,25 @@ from "./routes/user/settingsRoutes.js";
 import cloudinary from "./config/cloudinary.js";
 
 connectDB();
-console.log(
-  "Cloud:",
-  process.env.CLOUDINARY_CLOUD_NAME
-);
 
-console.log(
-  "Key:",
-  process.env.CLOUDINARY_API_KEY
-);
-
-console.log(
-  "Secret:",
-  process.env.CLOUDINARY_API_SECRET
-    ? "FOUND"
-    : "MISSING"
-);
 const app = express();
-app.use(cors());
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
-//Admin
+
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+    ],
+    credentials: true,
+  })
+);
+
+const PORT = process.env.PORT || 5000;
+
+
+//Admin
 app.use("/api/admin/vehicles", vehicleRoutes);
 app.use("/api/admin/bookings", adminBookingRoutes);
 app.use("/api/admin/drivers", driverRoutes)
@@ -86,7 +81,7 @@ app.use(
 
 app.use("/api/user/bookings", bookingRoutes);
 app.use("/uploads", express.static("uploads"));
-app.use("/api/bookings",bookingRoutes);
+
 app.use(
   "/api/packages",
   userPackageRoutes
@@ -102,6 +97,6 @@ app.use(
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(5000, () => {
-  console.log("Server Running 5000 port ");
+app.listen(PORT, () => {
+  console.log(`Server Running on Port ${PORT}`);
 });
