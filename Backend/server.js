@@ -39,6 +39,8 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
+      process.env.USER_CLIENT_URL,
+      process.env.ADMIN_CLIENT_URL,
       "http://localhost:5173",
       "http://localhost:5174",
     ],
