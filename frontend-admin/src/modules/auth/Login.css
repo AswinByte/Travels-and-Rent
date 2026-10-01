@@ -1,7 +1,7 @@
-/* =========================================
+/* =====================================================
    AR TRAVELS & RENTALS
-   ADMIN LOGIN PAGE
-========================================= */
+   ANIMATED ADMIN LOGIN
+===================================================== */
 
 * {
   box-sizing: border-box;
@@ -15,177 +15,590 @@
   align-items: center;
   justify-content: center;
 
-  padding: 20px;
-
   position: relative;
   overflow: hidden;
 
-  /* Travel / Road Background */
-  background-image:
+  background: #071426;
+}
+
+
+/* =====================================================
+   ANIMATED TRAVEL BACKGROUND
+===================================================== */
+
+.travel-background {
+  position: absolute;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #0b5fa5 0%,
+      #147bc1 28%,
+      #80c7e8 52%,
+      #274a38 53%,
+      #15251d 100%
+    );
+
+  z-index: 0;
+}
+
+
+/* Dark overlay */
+
+.travel-background::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background:
     linear-gradient(
       90deg,
-      rgba(3, 15, 35, 0.88) 0%,
-      rgba(3, 15, 35, 0.60) 45%,
-      rgba(3, 15, 35, 0.75) 100%
-    ),
-    url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2200&q=90");
+      rgba(3, 13, 27, 0.78),
+      rgba(3, 13, 27, 0.30),
+      rgba(3, 13, 27, 0.78)
+    );
 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  z-index: 10;
 }
 
 
-/* =========================================
-   BACKGROUND DECORATION
-========================================= */
+/* =====================================================
+   SUN
+===================================================== */
 
-.login-container::before {
+.sun {
+  position: absolute;
+
+  width: 170px;
+  height: 170px;
+
+  top: 8%;
+  right: 13%;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      #fff7b0 0%,
+      #ffd76a 45%,
+      rgba(255, 190, 60, 0.2) 70%,
+      transparent 72%
+    );
+
+  filter: blur(1px);
+
+  animation: sunGlow 4s ease-in-out infinite;
+}
+
+@keyframes sunGlow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+
+/* =====================================================
+   CLOUDS
+===================================================== */
+
+.cloud {
+  position: absolute;
+
+  width: 180px;
+  height: 55px;
+
+  border-radius: 50px;
+
+  background: rgba(255, 255, 255, 0.65);
+
+  filter: blur(2px);
+
+  z-index: 2;
+}
+
+.cloud::before,
+.cloud::after {
   content: "";
 
   position: absolute;
 
-  width: 500px;
-  height: 500px;
-
-  top: -250px;
-  left: -200px;
-
-  background: rgba(14, 165, 233, 0.20);
-
   border-radius: 50%;
 
-  filter: blur(80px);
+  background: inherit;
 }
 
-.login-container::after {
-  content: "";
+.cloud::before {
+  width: 80px;
+  height: 80px;
 
+  left: 25px;
+  bottom: 10px;
+}
+
+.cloud::after {
+  width: 100px;
+  height: 100px;
+
+  right: 20px;
+  bottom: 5px;
+}
+
+
+.cloud-one {
+  top: 16%;
+  left: -220px;
+
+  animation: cloudMove 35s linear infinite;
+}
+
+.cloud-two {
+  top: 28%;
+  left: -300px;
+
+  transform: scale(0.65);
+
+  animation: cloudMove 45s linear infinite;
+  animation-delay: 8s;
+}
+
+.cloud-three {
+  top: 10%;
+  left: -350px;
+
+  transform: scale(0.45);
+
+  animation: cloudMove 55s linear infinite;
+  animation-delay: 15s;
+}
+
+@keyframes cloudMove {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(140vw);
+  }
+}
+
+
+/* =====================================================
+   FLOATING PARTICLES
+===================================================== */
+
+.particle {
   position: absolute;
 
-  width: 450px;
-  height: 450px;
-
-  bottom: -250px;
-  right: -150px;
-
-  background: rgba(37, 99, 235, 0.25);
+  width: 5px;
+  height: 5px;
 
   border-radius: 50%;
 
-  filter: blur(80px);
+  background: rgba(255, 255, 255, 0.8);
+
+  z-index: 4;
+
+  animation: particleFloat 7s ease-in-out infinite;
+}
+
+.particle-1 {
+  left: 15%;
+  top: 20%;
+  animation-delay: 0s;
+}
+
+.particle-2 {
+  left: 30%;
+  top: 65%;
+  animation-delay: 2s;
+}
+
+.particle-3 {
+  left: 75%;
+  top: 25%;
+  animation-delay: 1s;
+}
+
+.particle-4 {
+  left: 85%;
+  top: 65%;
+  animation-delay: 3s;
+}
+
+.particle-5 {
+  left: 55%;
+  top: 15%;
+  animation-delay: 4s;
+}
+
+.particle-6 {
+  left: 8%;
+  top: 75%;
+  animation-delay: 2.5s;
+}
+
+@keyframes particleFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+
+  50% {
+    transform: translateY(-35px);
+    opacity: 1;
+  }
 }
 
 
-/* =========================================
+/* =====================================================
+   ROUTE LINE
+===================================================== */
+
+.route-line {
+  position: absolute;
+
+  left: 7%;
+  right: 7%;
+  top: 47%;
+
+  display: flex;
+  align-items: center;
+
+  z-index: 3;
+
+  opacity: 0.55;
+}
+
+.route-start,
+.route-end {
+  color: white;
+
+  filter:
+    drop-shadow(
+      0 3px 8px rgba(0, 0, 0, 0.4)
+    );
+}
+
+.route-dashed {
+  flex: 1;
+
+  height: 2px;
+
+  margin: 0 15px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.8) 0px,
+      rgba(255, 255, 255, 0.8) 15px,
+      transparent 15px,
+      transparent 30px
+    );
+
+  animation: routeMove 2s linear infinite;
+}
+
+@keyframes routeMove {
+  from {
+    background-position: 0;
+  }
+
+  to {
+    background-position: 30px;
+  }
+}
+
+
+/* =====================================================
+   ROAD
+===================================================== */
+
+.road {
+  position: absolute;
+
+  bottom: -80px;
+  left: -10%;
+
+  width: 120%;
+  height: 38%;
+
+  background:
+    linear-gradient(
+      165deg,
+      #202a31,
+      #10171c
+    );
+
+  transform: perspective(400px) rotateX(12deg);
+
+  z-index: 5;
+
+  border-top: 3px solid rgba(255, 255, 255, 0.35);
+}
+
+
+/* Road lane lines */
+
+.road-line {
+  position: absolute;
+
+  top: 50%;
+
+  width: 160px;
+  height: 8px;
+
+  background: #f8fafc;
+
+  border-radius: 10px;
+
+  opacity: 0.8;
+
+  animation: roadMove 1.5s linear infinite;
+}
+
+.road-line-1 {
+  left: 5%;
+}
+
+.road-line-2 {
+  left: 45%;
+
+  animation-delay: 0.5s;
+}
+
+.road-line-3 {
+  left: 85%;
+
+  animation-delay: 1s;
+}
+
+@keyframes roadMove {
+  from {
+    transform: translateX(-200px);
+  }
+
+  to {
+    transform: translateX(200px);
+  }
+}
+
+
+/* =====================================================
+   MOVING CAR
+===================================================== */
+
+.moving-car {
+  position: absolute;
+
+  left: -100px;
+  bottom: 11%;
+
+  color: #ffffff;
+
+  z-index: 7;
+
+  filter:
+    drop-shadow(
+      0 8px 12px rgba(0, 0, 0, 0.5)
+    );
+
+  animation:
+    carDrive 12s linear infinite;
+}
+
+@keyframes carDrive {
+  from {
+    transform: translateX(-120px);
+  }
+
+  to {
+    transform: translateX(115vw);
+  }
+}
+
+
+/* =====================================================
    LOGIN CARD
-========================================= */
+===================================================== */
 
 .login-form {
   width: 100%;
-  max-width: 420px;
+  max-width: 430px;
 
-  padding: 42px 38px;
+  padding: 38px 38px 30px;
 
-  background: rgba(255, 255, 255, 0.97);
+  position: relative;
 
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  z-index: 20;
 
-  border-radius: 22px;
+  background:
+    rgba(255, 255, 255, 0.94);
+
+  backdrop-filter: blur(18px);
+
+  -webkit-backdrop-filter: blur(18px);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.7);
+
+  border-radius: 24px;
 
   box-shadow:
-    0 30px 70px rgba(0, 0, 0, 0.40),
-    0 10px 30px rgba(0, 0, 0, 0.20);
+    0 30px 80px rgba(0, 0, 0, 0.45);
 
   display: flex;
+
   flex-direction: column;
 
   gap: 18px;
 
-  position: relative;
-  z-index: 2;
-
-  animation: loginCard 0.6s ease;
+  animation: cardEnter 0.8s ease;
 }
 
 
-/* =========================================
+/* =====================================================
+   CARD ANIMATION
+===================================================== */
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(40px)
+      scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* =====================================================
    BRAND
-========================================= */
+===================================================== */
 
 .login-brand {
   text-align: center;
-  margin-bottom: 5px;
 }
 
-.login-brand .brand-icon {
-  width: 55px;
-  height: 55px;
+.brand-icon {
+  width: 58px;
+  height: 58px;
 
-  margin: 0 auto 12px;
+  margin: 0 auto 10px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
-  border-radius: 15px;
-
-  background: linear-gradient(
-    135deg,
-    #0ea5e9,
-    #2563eb
-  );
-
   color: white;
 
-  font-size: 25px;
+  background:
+    linear-gradient(
+      135deg,
+      #0ea5e9,
+      #2563eb
+    );
+
+  border-radius: 17px;
 
   box-shadow:
-    0 10px 25px rgba(37, 99, 235, 0.30);
+    0 10px 25px rgba(37, 99, 235, 0.35);
+
+  animation: iconFloat 3s ease-in-out infinite;
 }
 
+@keyframes iconFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
 
-/* =========================================
-   HEADING
-========================================= */
+  50% {
+    transform: translateY(-5px);
+  }
+}
 
-.login-form h2 {
-  margin: 0;
-
-  text-align: center;
-
+.brand-name {
   color: #0f172a;
 
-  font-size: 29px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
 
-  letter-spacing: -0.5px;
+  letter-spacing: 1px;
 }
 
-.login-form h2::after {
-  content: "AR Travels & Rentals";
-
-  display: block;
-
-  margin-top: 8px;
+.brand-subtitle {
+  margin-top: 2px;
 
   color: #64748b;
 
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 10px;
+  font-weight: 600;
 
-  letter-spacing: 0;
+  letter-spacing: 2px;
 }
 
 
-/* =========================================
+/* =====================================================
+   HEADING
+===================================================== */
+
+.login-heading {
+  text-align: center;
+
+  margin-bottom: 3px;
+}
+
+.login-heading h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.login-heading p {
+  margin: 6px 0 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
    INPUT GROUP
-========================================= */
+===================================================== */
 
 .input-group {
   width: 100%;
 
   display: flex;
+
   flex-direction: column;
 
   gap: 7px;
@@ -194,19 +607,19 @@
 .input-group label {
   color: #334155;
 
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
 
-/* =========================================
-   INPUT FIELDS
-========================================= */
+/* =====================================================
+   INPUT
+===================================================== */
 
 .login-form input {
   width: 100%;
 
-  padding: 14px 16px;
+  padding: 14px 15px;
 
   background: #f8fafc;
 
@@ -220,35 +633,80 @@
 
   font-size: 15px;
 
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
+  transition: 0.25s ease;
 }
 
 .login-form input::placeholder {
   color: #94a3b8;
 }
 
-.login-form input:hover {
-  border-color: #94a3b8;
-}
-
 .login-form input:focus {
-  background: #ffffff;
+  background: white;
 
   border-color: #0ea5e9;
 
   box-shadow:
-    0 0 0 3px rgba(14, 165, 233, 0.15);
+    0 0 0 3px
+    rgba(14, 165, 233, 0.13);
 }
 
 
-/* =========================================
-   LOGIN BUTTON
-========================================= */
+/* =====================================================
+   PASSWORD
+===================================================== */
 
-.login-form button {
+.password-wrapper {
+  position: relative;
+
+  width: 100%;
+}
+
+.password-wrapper input {
+  padding-right: 48px;
+}
+
+.password-eye {
+  position: absolute !important;
+
+  right: 7px;
+  top: 50%;
+
+  transform: translateY(-50%) !important;
+
+  width: 38px !important;
+  height: 38px;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  box-shadow: none !important;
+
+  color: #64748b;
+
+  cursor: pointer;
+}
+
+.password-eye:hover {
+  color: #2563eb;
+
+  background: #eff6ff !important;
+}
+
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+.login-button {
   width: 100%;
 
   padding: 14px;
@@ -259,59 +717,51 @@
 
   border-radius: 11px;
 
-  background: linear-gradient(
-    135deg,
-    #0ea5e9,
-    #2563eb
-  );
+  background:
+    linear-gradient(
+      135deg,
+      #0ea5e9,
+      #2563eb
+    );
 
   color: white;
 
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
 
   cursor: pointer;
 
   box-shadow:
-    0 8px 20px rgba(37, 99, 235, 0.35);
+    0 10px 22px
+    rgba(37, 99, 235, 0.3);
 
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease;
+  transition: 0.25s ease;
 }
 
-.login-form button:hover {
+.login-button:hover {
   transform: translateY(-2px);
 
-  background: linear-gradient(
-    135deg,
-    #0284c7,
-    #1d4ed8
-  );
-
   box-shadow:
-    0 12px 28px rgba(37, 99, 235, 0.45);
+    0 14px 30px
+    rgba(37, 99, 235, 0.42);
 }
 
-.login-form button:active {
+.login-button:active {
   transform: translateY(0);
 }
 
-.login-form button:disabled {
+.login-button:disabled {
   opacity: 0.65;
 
   cursor: not-allowed;
 
   transform: none;
-
-  box-shadow: none;
 }
 
 
-/* =========================================
+/* =====================================================
    FOOTER
-========================================= */
+===================================================== */
 
 .login-footer {
   text-align: center;
@@ -320,79 +770,67 @@
 
   color: #94a3b8;
 
-  font-size: 12px;
+  font-size: 11px;
 }
 
 
-/* =========================================
-   LOGIN ANIMATION
-========================================= */
-
-@keyframes loginCard {
-  0% {
-    opacity: 0;
-
-    transform:
-      translateY(30px)
-      scale(0.97);
-  }
-
-  100% {
-    opacity: 1;
-
-    transform:
-      translateY(0)
-      scale(1);
-  }
-}
-
-
-/* =========================================
-   MOBILE RESPONSIVE
-========================================= */
+/* =====================================================
+   MOBILE
+===================================================== */
 
 @media (max-width: 600px) {
 
   .login-container {
     padding: 15px;
-
-    background-position: center;
   }
 
   .login-form {
     max-width: 100%;
 
-    padding: 34px 25px;
+    padding: 30px 23px;
 
-    border-radius: 18px;
+    border-radius: 20px;
   }
 
-  .login-form h2 {
-    font-size: 25px;
+  .road {
+    height: 28%;
   }
 
-  .login-form input {
-    padding: 13px 14px;
+  .moving-car {
+    bottom: 9%;
   }
 
-  .login-form button {
-    padding: 13px;
-  }
-}
-
-
-/* =========================================
-   SMALL MOBILE
-========================================= */
-
-@media (max-width: 380px) {
-
-  .login-form {
-    padding: 28px 20px;
+  .route-line {
+    top: 40%;
   }
 
-  .login-form h2 {
-    font-size: 23px;
+  .sun {
+    right: -40px;
+    top: 8%;
+
+    width: 130px;
+    height: 130px;
+  }
+
+  .login-heading h2 {
+    font-size: 24px;
   }
 }
 
+
+/* =====================================================
+   REDUCE MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+
+    animation-iteration-count: 1 !important;
+
+    scroll-behavior: auto !important;
+  }
+}
